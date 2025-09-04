@@ -1067,53 +1067,66 @@
             }
         }
 
-        function atualizarTabelaJovens() {
-            try {
-                const tbody = document.getElementById('jovensTable');
-                if (!tbody) return;
-                
-                tbody.innerHTML = '';
+function atualizarTabelaJovens() {
+    const tabelaBody = document.querySelector('#tabela-jovens tbody');
+    tabelaBody.innerHTML = ''; // Limpa a tabela
 
-                if (!dadosFiltrados || dadosFiltrados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="no-data">Nenhum jovem encontrado com os filtros aplicados.<br>Tente ajustar os critérios de busca.</td></tr>';
-                    return;
-                }
+    // Filtrar dados de acordo com os filtros ativos
+    let dadosFiltrados = dadosJovens.filter(jovem => {
+        const filtroStatus = document.querySelector('#filtro-status').value;
+        const filtroMotivo = document.querySelector('#filtro-motivo').value;
+        const filtroTipo = document.querySelector('#filtro-tipo').value;
+        const filtroNome = document.querySelector('#filtro-nome').value.toLowerCase();
 
-                const jovensOrdenados = dadosFiltrados.sort((a, b) => {
-                    if (b.quantidade !== a.quantidade) return b.quantidade - a.quantidade;
-                    return a.nome.localeCompare(b.nome);
-                });
+        const statusOk = filtroStatus === '' || jovem.status.toLowerCase() === filtroStatus.toLowerCase();
+        const tipoOk = filtroTipo === '' || jovem.tipo.toLowerCase() === filtroTipo.toLowerCase();
+        const nomeOk = jovem.nome.toLowerCase().includes(filtroNome);
+        const motivoOk = filtroMotivo === '' || jovem.motivos.some(m => m.toLowerCase() === filtroMotivo.toLowerCase());
 
-                jovensOrdenados.forEach((jovem) => {
-                    const tr = document.createElement('tr');
-                    
-                    if (jovem.quantidade >= 7) {
-                        tr.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
-                    } else if (jovem.quantidade >= 5) {
-                        tr.style.backgroundColor = 'rgba(254, 202, 87, 0.1)';
-                    }
-                    
-                    let motivosTruncados = 'N/A';
-                    if (jovem.motivos && jovem.motivos.length > 0) {
-                        const principaisMotivos = jovem.motivos.slice(0, 3).join(', ');
-                        motivosTruncados = principaisMotivos.length > 40 ? 
-                            principaisMotivos.substring(0, 40) + '...' : principaisMotivos;
-                    }
-                    
-                    tr.innerHTML = `
-                        <td><strong>${jovem.nome}</strong></td>
-                        <td><span class="status-badge status-ok">${jovem.verbais}</span></td>
-                        <td><span class="status-badge status-critico">${jovem.escritas}</span></td>
-                        <td><strong>${jovem.quantidade}</strong></td>
-                        <td><span class="status-badge ${jovem.status === 'Precisa ser aplicada' ? 'status-critico' : jovem.status === 'Não Necessária' ? 'status-ok' : 'status-atencao'}">${jovem.status === 'Precisa ser aplicada' ? 'Precisa Advertência' : jovem.status === 'Não Necessária' ? 'Situação Controlada' : jovem.status}</span></td>
-                        <td>${motivosTruncados}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (error) {
-                console.error('Erro ao atualizar tabela:', error);
-            }
-        }
+        return statusOk && tipoOk && nomeOk && motivoOk;
+    });
+
+    // Ordenar pelo total de advertências do maior para o menor
+    dadosFiltrados.sort((a, b) => (b.verbais + b.escritas) - (a.verbais + a.escritas));
+
+    // Popular a tabela
+    dadosFiltrados.forEach(jovem => {
+        const tr = document.createElement('tr');
+
+        const tdNome = document.createElement('td');
+        tdNome.textContent = jovem.nome;
+        tr.appendChild(tdNome);
+
+        const tdVerbais = document.createElement('td');
+        tdVerbais.textContent = jovem.verbais;
+        tr.appendChild(tdVerbais);
+
+        const tdEscritas = document.createElement('td');
+        tdEscritas.textContent = jovem.escritas;
+        tr.appendChild(tdEscritas);
+
+        const tdTotal = document.createElement('td');
+        tdTotal.textContent = jovem.verbais + jovem.escritas;
+        tr.appendChild(tdTotal);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = jovem.status;
+        tr.appendChild(tdStatus);
+
+        const tdMotivos = document.createElement('td');
+        tdMotivos.textContent = jovem.motivos.join(', ');
+        tr.appendChild(tdMotivos);
+
+        tabelaBody.appendChild(tr);
+    });
+
+    // Atualizar KPIs
+    atualizarKPIs(dadosFiltrados);
+
+    // Atualizar gráficos
+    atualizarGraficos(dadosFiltrados);
+}
+
 
         function mostrarMensagem(mensagem, tipo = 'info') {
             const messageDiv = document.getElementById('loadMessage');
