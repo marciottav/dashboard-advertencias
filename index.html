@@ -371,7 +371,7 @@
             <textarea id="jsonInput" placeholder="Cole aqui o JSON completo da sua planilha..."></textarea>
             <button onclick="carregarDadosManual()">📊 Atualizar Dashboard</button>
             <button onclick="usarDadosExemplo()">🔧 Carregar Exemplo</button>
-            <button onclick="carregarDadosDaAPI()">🌐 Carregar da API Online</button>
+            <button onclick="carregarDadosManual()">🌐 Carregar da API Online</button>
             <div id="loadMessage"></div>
         </div>
 
@@ -488,14 +488,14 @@
             const lastUpdateElement = document.getElementById('lastUpdate');
             lastUpdateElement.textContent = 'Carregando dados da API online...';
             
-            const success = await carregarDadosDaAPI();
+            const success = await carregarDadosManual();
             if (!success) {
                 lastUpdateElement.textContent = 'Falha ao carregar da API. Carregando dados de exemplo.';
                 carregarDadosExemplo(); // Fallback para dados de exemplo
             }
         });
 
-        async function carregarDadosDaAPI() {
+        async function carregarDadosManual() {
             mostrarMensagem('🌐 Buscando dados da API online...', 'info');
             try {
                 const response = await fetch(API_URL);
