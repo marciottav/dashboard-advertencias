@@ -810,7 +810,7 @@
         function atualizarDashboard() {
             atualizarKPIs();
             atualizarGraficos();
-            atualizarTabelaJovens();
+            atualizarjovensTable();
         }
 
         function atualizarKPIs() {
@@ -1067,7 +1067,7 @@
             }
         }
   // Função para atualizar a tabela com os dados
-  function atualizarTabelaJovens() {
+  function atualizarjovensTable() {
   const tabela = document.getElementById("jovensTable");
   tabela.innerHTML = ""; 
 
@@ -1105,7 +1105,7 @@
       }
 
       const dados = JSON.parse(conteudoJSON);
-      atualizarTabelaJovens(dados);
+      atualizarjovensTable(dados);
     } catch (erro) {
       mostrarMensagem("Erro ao processar o JSON: " + erro.message, "erro");
     }
