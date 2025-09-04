@@ -1066,22 +1066,21 @@
                 console.error('Erro ao atualizar gráfico de distribuição:', error);
             }
         }
-<script>
   // Função para atualizar a tabela com os dados
-  function atualizarTabelaJovens(dados) {
-    const tabela = document.getElementById("tabelaJovens").getElementsByTagName("tbody")[0];
-    tabela.innerHTML = ""; // Limpa a tabela antes de preencher
+  function atualizarTabelaJovens() {
+  const tabela = document.getElementById("jovensTable");
+  tabela.innerHTML = ""; 
 
-    dados.forEach((jovem, index) => {
-      const linha = tabela.insertRow();
-      linha.insertCell(0).innerText = index + 1;
-      linha.insertCell(1).innerText = jovem.nome;
-      linha.insertCell(2).innerText = jovem.idade;
-      linha.insertCell(3).innerText = jovem.setor;
-      linha.insertCell(4).innerText = jovem.status;
-    });
-
-    mostrarMensagem("Tabela atualizada com sucesso!", "sucesso");
+  dadosFiltrados.forEach((jovem) => {
+    const linha = tabela.insertRow();
+    linha.insertCell(0).innerText = jovem.nome;
+    linha.insertCell(1).innerText = jovem.verbais;
+    linha.insertCell(2).innerText = jovem.escritas;
+    linha.insertCell(3).innerText = jovem.quantidade;
+    linha.insertCell(4).innerText = jovem.status;
+    linha.insertCell(5).innerText = jovem.motivos.join(", ");
+  });
+}
   }
 
   // Função para mostrar mensagens ao usuário
