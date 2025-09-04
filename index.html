@@ -1066,69 +1066,51 @@
                 console.error('Erro ao atualizar gráfico de distribuição:', error);
             }
         }
+<script>
+  // Função para atualizar a tabela com os dados
+  function atualizarTabelaJovens(dados) {
+    const tabela = document.getElementById("tabelaJovens").getElementsByTagName("tbody")[0];
+    tabela.innerHTML = ""; // Limpa a tabela antes de preencher
 
-function atualizarTabelaJovens() {
-    const tabelaBody = document.getElementById('jovensTable');
-    tabelaBody.innerHTML = ''; // Limpa a tabela
-
-    if (!dadosFiltrados || dadosFiltrados.length === 0) {
-        tabelaBody.innerHTML = `<tr><td colspan="6" class="no-data">Nenhum jovem encontrado com os filtros aplicados.</td></tr>`;
-        return;
-    }
-
-    dadosFiltrados.forEach(jovem => {
-        const tr = document.createElement('tr');
-
-        const tdNome = document.createElement('td');
-        tdNome.textContent = jovem.nome;
-        tr.appendChild(tdNome);
-
-        const tdVerbais = document.createElement('td');
-        tdVerbais.textContent = jovem.verbais;
-        tr.appendChild(tdVerbais);
-
-        const tdEscritas = document.createElement('td');
-        tdEscritas.textContent = jovem.escritas;
-        tr.appendChild(tdEscritas);
-
-        const tdTotal = document.createElement('td');
-        tdTotal.textContent = jovem.quantidade;
-        tr.appendChild(tdTotal);
-
-        const tdStatus = document.createElement('td');
-        tdStatus.textContent = jovem.status;
-        // Adiciona classe de estilo para status
-        if (jovem.status === "Precisa ser aplicada") tdStatus.classList.add('status-badge', 'status-critico');
-        else if (jovem.status === "Não Necessária") tdStatus.classList.add('status-badge', 'status-ok');
-        else tdStatus.classList.add('status-badge', 'status-atencao');
-        tr.appendChild(tdStatus);
-
-        const tdMotivos = document.createElement('td');
-        tdMotivos.textContent = jovem.motivos.join(', ');
-        tr.appendChild(tdMotivos);
-
-        tabelaBody.appendChild(tr);
+    dados.forEach((jovem, index) => {
+      const linha = tabela.insertRow();
+      linha.insertCell(0).innerText = index + 1;
+      linha.insertCell(1).innerText = jovem.nome;
+      linha.insertCell(2).innerText = jovem.idade;
+      linha.insertCell(3).innerText = jovem.setor;
+      linha.insertCell(4).innerText = jovem.status;
     });
-}
 
-// Função para exibir mensagens
-function mostrarMensagem(msg, tipo = 'info') {
-    const container = document.getElementById('loadMessage');
-    container.innerHTML = '';
-    const div = document.createElement('div');
-    div.classList.add('message');
-    if (tipo === 'success') div.classList.add('success-msg');
-    else if (tipo === 'error') div.classList.add('error-msg');
-    else div.classList.add('info-msg');
-    div.textContent = msg;
-    container.appendChild(div);
+    mostrarMensagem("Tabela atualizada com sucesso!", "sucesso");
+  }
 
-    // Remove mensagem automaticamente após 5 segundos
+  // Função para mostrar mensagens ao usuário
+  function mostrarMensagem(texto, tipo) {
+    const divMensagem = document.getElementById("mensagem");
+    divMensagem.innerText = texto;
+    divMensagem.className = tipo; // "sucesso" ou "erro"
+    divMensagem.style.display = "block";
+
     setTimeout(() => {
-        if (container.contains(div)) container.removeChild(div);
-    }, 5000);
-}
+      divMensagem.style.display = "none";
+    }, 3000);
+  }
 
-    </script>
+  // Evento do botão para carregar os dados
+  document.getElementById("botaoCarregar").addEventListener("click", () => {
+    try {
+      const conteudoJSON = document.getElementById("inputJSON").value;
+      if (!conteudoJSON) {
+        mostrarMensagem("Por favor, cole os dados JSON primeiro.", "erro");
+        return;
+      }
+
+      const dados = JSON.parse(conteudoJSON);
+      atualizarTabelaJovens(dados);
+    } catch (erro) {
+      mostrarMensagem("Erro ao processar o JSON: " + erro.message, "erro");
+    }
+  });
+</script>
 </body>
 </html>
