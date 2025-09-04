@@ -364,7 +364,7 @@
             <h3>📋 Atualizar com Dados Reais da Planilha</h3>
             <p>
                 <strong>Para usar dados atualizados da sua planilha:</strong><br>
-                1. <a href="https://script.google.com/macros/s/AKfycbxkyUVTQmwgiRXq6cRncnYYIikacSD6KbavH1JraoCy5F5gfG4oWna09950NeY8Nkujgg/exec" target="_blank">👆 Clique aqui para abrir sua API</a><br>
+                1. <a href="https://script.google.com/macros/s/AKfycbyo3GP9gc-r4hoqqVVmCWwuhyFGdRieQE0xmRaZwIfVHPZmENXAJY2iWnvMmL6CZjXNxw/exec" target="_blank">👆 Clique aqui para abrir sua API</a><br>
                 2. Copie TODO o conteúdo JSON que aparecer na página<br>
                 3. Cole no campo abaixo e clique em "Atualizar Dashboard"
             </p>
@@ -481,7 +481,7 @@
         let chartStatus, chartDistribuicao;
 
         // URL da sua API do Google Sheets (ATUALIZADA)
-        const API_URL = "https://script.google.com/macros/s/AKfycbyKkPjhJX9HOu51Swz2tfhTZ9KYBo107by47c-oFSxh2xn_RyhCRRioDsRogOn4MGtg/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyo3GP9gc-r4hoqqVVmCWwuhyFGdRieQE0xmRaZwIfVHPZmENXAJY2iWnvMmL6CZjXNxw/exec";
 
         // Inicialização: Tenta carregar da API, se falhar, carrega dados de exemplo
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1124,7 +1124,7 @@ function atualizarTabelaJovens() {
 <script>
   // --- Função para carregar dados manualmente ---
   async function carregarDadosManual() {
-      const url = "COLE_AQUI_O_SEU_URL_DO_WEB_APP"; // Substitua pelo URL do seu doGet publicado
+      const url = "https://script.google.com/macros/s/AKfycbyo3GP9gc-r4hoqqVVmCWwuhyFGdRieQE0xmRaZwIfVHPZmENXAJY2iWnvMmL6CZjXNxw/exec"; // Substitua pelo URL do seu doGet publicado
       try {
           const response = await fetch(url);
           const dados = await response.json();
