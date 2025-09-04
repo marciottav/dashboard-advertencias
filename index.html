@@ -1120,6 +1120,36 @@ function atualizarTabelaJovens() {
                 messageDiv.innerHTML = '';
             }, 5000);
         }
+
+<script>
+  // --- Função para carregar dados manualmente ---
+  async function carregarDadosManual() {
+      const url = "COLE_AQUI_O_SEU_URL_DO_WEB_APP"; // Substitua pelo URL do seu doGet publicado
+      try {
+          const response = await fetch(url);
+          const dados = await response.json();
+
+          if (dados.error) {
+              alert("Erro ao carregar dados: " + dados.error);
+              console.error(dados);
+              return;
+          }
+
+          // Atualiza suas variáveis com os dados do Web App
+          dadosAdvertencias = dados["Planilha de Advertências"];
+          dadosFiltrados = [...dadosAdvertencias];
+
+          // Chama a função que atualiza a tabela/dashboard
+          if (typeof atualizarTabelaJovens === 'function') {
+              atualizarTabelaJovens();
+          }
+
+          alert("Dados carregados com sucesso!");
+      } catch (err) {
+          alert("Falha ao carregar os dados. Veja o console.");
+          console.error(err);
+      }
+  }
     </script>
 </body>
 </html>
