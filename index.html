@@ -1157,17 +1157,75 @@ window.addEventListener('load', function() {
                         }
                     }
                 });
-            } else {
-                const nomesFiltrados = dadosFiltrados.map(j => j.nome);
-                const advertenciasFiltradas = advertenciasAplicadas.filter(adv => 
-                    nomesFiltrados.includes(adv.nome)
-                );
+} else {
+    const nomesFiltrados = dadosFiltrados.map(j => j.nome);
+    const advertenciasFiltradas = advertenciasAplicadas.filter(adv => 
+        nomesFiltrados.includes(adv.nome)
+    );
 
-                const tiposCount = {
-                    'Verbal': advertenciasFiltradas.filter(a => a.tipo === 'Verbal').length,
-                    'Escrita': advertenciasFiltradas.filter(a => a.tipo === 'Escrita').length
-                };
+    // Se há busca por nome específico, mostrar motivos ao invés de tipos
+    const buscaNome = document.getElementById('buscaNome')?.value.toLowerCase().trim() || '';
+    
+    if (buscaNome) {
+        // Mostrar distribuição por motivos quando filtrado por nome
+        const motivosCount = {};
+        advertenciasFiltradas.forEach(adv => {
+            motivosCount[adv.motivo] = (motivosCount[adv.motivo] || 0) + 1;
+        });
 
+        const topMotivos = Object.entries(motivosCount)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 6);
+        
+        if (topMotivos.length === 0) {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = '#888';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Nenhum motivo encontrado', ctx.canvas.width/2, ctx.canvas.height/2);
+            return;
+        }
+
+        const totalOcorrencias = topMotivos.reduce((sum, [,count]) => sum + count, 0);
+
+        chartStatus = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: topMotivos.map(([motivo, count]) => {
+                    const porcentagem = ((count / totalOcorrencias) * 100).toFixed(1);
+                    const motivoTruncado = motivo.length > 20 ? motivo.substring(0, 20) + '...' : motivo;
+                    return `${motivoTruncado} (${porcentagem}%)`;
+                }),
+                datasets: [{
+                    data: topMotivos.map(([,count]) => count),
+                    backgroundColor: [
+                        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
+                        '#FFEAA7', '#DDA0DD'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { 
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        // Comportamento original quando não há busca por nome
+        const tiposCount = {
+            'Verbal': advertenciasFiltradas.filter(a => a.tipo === 'Verbal').length,
+            'Escrita': advertenciasFiltradas.filter(a => a.tipo === 'Escrita').length
+        };
                 const total = Object.values(tiposCount).reduce((sum, val) => sum + val, 0);
 
                 if (total === 0) {
